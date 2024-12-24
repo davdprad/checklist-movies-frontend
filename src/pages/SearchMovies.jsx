@@ -60,12 +60,12 @@ const MovieList = () => {
     setDebounceTimeout(timeout);
 
     return () => clearTimeout(timeout);
-  }, [searchTerm]);
+  }, [searchTerm, fetchMovies, debounceTimeout]);
 
   return (
     <div style={{ padding: "20px", backgroundColor: alpha("#9AAFCE", 0.05) }}>
       <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-        <SearchComponent setValue={setSearchTerm} />
+        <SearchComponent setValue={setSearchTerm} backgroundColor="#D3E0E6" />
       </div>
       <Grid2
         container
@@ -79,11 +79,11 @@ const MovieList = () => {
             <Card
               sx={{
                 borderRadius: 5,
-                backgroundColor: alpha("#9AAFCE", 0.3),
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                backgroundColor: "#D3E0E6",
+                boxShadow: "none",
                 overflow: "hidden",
                 ":hover": {
-                  backgroundColor: alpha("#9AAFCE", 0.45),
+                  backgroundColor: alpha("#D3E0E6", 1.15),
                 },
               }}
             >

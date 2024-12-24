@@ -1,15 +1,23 @@
 import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
+import { styled, darken } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import Box from "@mui/material/Box";
+import { getContrastRatio } from "@mui/system";
 
-const Search = styled("div")(({ theme }) => ({
+function getTextColor(backgroundColor) {
+  const whiteContrast = getContrastRatio(backgroundColor, "#FFFFFF");
+  const blackContrast = getContrastRatio(backgroundColor, "#000000");
+
+  return whiteContrast > blackContrast ? "#FFFFFF" : "#000000";
+}
+
+const Search = styled("div")(({ theme, backgroundColor }) => ({
   position: "relative",
   borderRadius: 10,
-  backgroundColor: alpha("#9AAFCE", 0.12),
+  backgroundColor: backgroundColor,
   "&:hover": {
-    backgroundColor: alpha("#9AAFCE", 0.15),
+    backgroundColor: darken(backgroundColor, 0.03),
   },
   marginLeft: 0,
   height: "100%",
@@ -31,7 +39,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
+  color: "#000",
   width: "100%",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
@@ -46,7 +54,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchComponent({ setValue }) {
+export default function SearchComponent({
+  setValue,
+  backgroundColor = "#FFF",
+}) {
   const [searchTerm, setSearchTerm] = React.useState("");
 
   const handleChange = (event) => {
@@ -58,7 +69,7 @@ export default function SearchComponent({ setValue }) {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Search>
+      <Search backgroundColor={backgroundColor}>
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
@@ -66,7 +77,9 @@ export default function SearchComponent({ setValue }) {
           value={searchTerm}
           onChange={handleChange}
           placeholder="Search movie..."
-          inputProps={{ "aria-label": "search" }}
+          inputProps={{
+            "aria-label": "search",
+          }}
         />
       </Search>
     </Box>
