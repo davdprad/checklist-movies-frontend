@@ -10,8 +10,9 @@ const MovieList = () => {
 
   const fetchMovies = async () => {
     try {
+      console.log("AAAAAAAAAAAAAA");
       const response = await fetch(
-        `http://localhost:8000/movie-data?movie=${searchTerm}`
+        `https://checklist-movies-backend.onrender.com/movie-data?movie=${searchTerm}`
       );
       const data = await response.json();
       setMovies(data);
@@ -22,7 +23,7 @@ const MovieList = () => {
 
   const addMovie = async (movieId) => {
     try {
-      const response = await fetch("http://localhost:8000/add-movie/", {
+      const response = await fetch("https://checklist-movies-backend.onrender.com/add-movie", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +61,7 @@ const MovieList = () => {
     setDebounceTimeout(timeout);
 
     return () => clearTimeout(timeout);
-  }, [searchTerm, fetchMovies, debounceTimeout]);
+  }, [searchTerm]);
 
   return (
     <div style={{ padding: "20px", backgroundColor: alpha("#9AAFCE", 0.05) }}>
