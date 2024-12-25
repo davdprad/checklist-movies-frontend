@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { alpha } from "@mui/material/styles";
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import { darken } from "@mui/material/styles";
 import { Button, Grid2, Card, CardMedia } from "@mui/material";
 import SearchComponent from "../components/search/SearchField";
+import ModalInfoMovie from "../components/modal/InfoMovie";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debounceTimeout, setDebounceTimeout] = useState(null);
 
-  const fetchMovies = async () => {
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const debounceTimeout = useRef(null);
+
+  const fetchMovies = useCallback(async () => {
     try {
-      console.log("AAAAAAAAAAAAAA");
       const response = await fetch(
         `https://checklist-movies-backend.onrender.com/movie-data?movie=${searchTerm}`
       );
@@ -19,17 +24,20 @@ const MovieList = () => {
     } catch (error) {
       console.error("Erro ao buscar filmes:", error);
     }
-  };
+  }, [searchTerm]);
 
   const addMovie = async (movieId) => {
     try {
-      const response = await fetch("https://checklist-movies-backend.onrender.com/add-movie", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: movieId }),
-      });
+      const response = await fetch(
+        "https://checklist-movies-backend.onrender.com/add-movie",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: movieId }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -48,25 +56,38 @@ const MovieList = () => {
   };
 
   useEffect(() => {
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
 
-    const timeout = setTimeout(() => {
+    debounceTimeout.current = setTimeout(() => {
       if (searchTerm) {
         fetchMovies();
       }
-    }, 1000);
+    }, 500);
 
-    setDebounceTimeout(timeout);
+    return () => clearTimeout(debounceTimeout.current);
+  }, [searchTerm, fetchMovies]);
 
-    return () => clearTimeout(timeout);
-  }, [searchTerm]);
+  const handleCardClick = (movie) => {
+    setSelectedMovie(movie);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedMovie(null);
+  };
 
   return (
-    <div style={{ padding: "20px", backgroundColor: alpha("#9AAFCE", 0.05) }}>
-      <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-        <SearchComponent setValue={setSearchTerm} backgroundColor="#D3E0E6" />
+    <div style={{ padding: "20px" }}>
+      <div style={{ marginBottom: "20px" }}>
+        <SearchComponent
+          setValue={setSearchTerm}
+          backgroundColor="#4D76AC30"
+          placeholder="Search..."
+          width="100%"
+        />
       </div>
       <Grid2
         container
@@ -83,10 +104,12 @@ const MovieList = () => {
                 backgroundColor: "#D3E0E6",
                 boxShadow: "none",
                 overflow: "hidden",
+                transition: "background-color 0.3s ease",
                 ":hover": {
-                  backgroundColor: alpha("#D3E0E6", 1.15),
+                  backgroundColor: darken("#D3E0E6", 0.1),
                 },
               }}
+              onClick={() => handleCardClick(movie)}
             >
               <div style={{ overflow: "hidden" }}>
                 <CardMedia
@@ -160,6 +183,9 @@ const MovieList = () => {
           </Grid2>
         ))}
       </Grid2>
+      {selectedMovie && (
+        <ModalInfoMovie selectedMovie={selectedMovie} isModalOpen={isModalOpen} handleCloseModal={handleCloseModal}/>
+      )}
     </div>
   );
 };

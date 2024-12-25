@@ -12,6 +12,7 @@ root.render(
           padding: 0;
           box-sizing: border-box;
           border: none;
+          background-color: #D3E0E625;
         }
       `}
     </style>

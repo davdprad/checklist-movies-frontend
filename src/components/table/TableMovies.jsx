@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useMediaQuery } from "@mui/material";
 import {
   Table,
   TableBody,
@@ -7,11 +8,11 @@ import {
   TableHead,
   TableRow,
   Checkbox,
-  Paper,
 } from "@mui/material";
 
 const TableMovies = ({ data }) => {
   const [movies, setMovies] = useState([]);
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
   useEffect(() => {
     if (data) {
@@ -22,7 +23,7 @@ const TableMovies = ({ data }) => {
   return (
     <div
       style={{
-        backgroundColor: "#D3E0E6",
+        backgroundColor: "#4D76AC30",
         padding: 10,
         borderRadius: 12,
       }}
@@ -45,7 +46,7 @@ const TableMovies = ({ data }) => {
                 sx={{
                   borderBottom: "none",
                   padding: "8px",
-                  width: "5%",
+                  width: isSmallScreen ? "20%" : "5%",
                   fontWeight: "bold",
                 }}
               ></TableCell>
@@ -53,32 +54,36 @@ const TableMovies = ({ data }) => {
                 sx={{
                   borderBottom: "none",
                   padding: "8px",
-                  width: "20%",
+                  width: isSmallScreen ? "80%" : "20%",
                   fontWeight: "bold",
                 }}
               >
                 Nome do Filme
               </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: "none",
-                  padding: "8px",
-                  width: "60%",
-                  fontWeight: "bold",
-                }}
-              >
-                Descrição Geral
-              </TableCell>
-              <TableCell
-                sx={{
-                  borderBottom: "none",
-                  padding: "8px",
-                  width: "15%",
-                  fontWeight: "bold",
-                }}
-              >
-                Data de lançamento
-              </TableCell>
+              {!isSmallScreen && (
+                <>
+                  <TableCell
+                    sx={{
+                      borderBottom: "none",
+                      padding: "8px",
+                      width: "60%",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Descrição Geral
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderBottom: "none",
+                      padding: "8px",
+                      width: "15%",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Data de lançamento
+                  </TableCell>
+                </>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -92,32 +97,58 @@ const TableMovies = ({ data }) => {
                   backgroundColor: "#ffffff",
                   boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
                   "&:hover": {
-                    backgroundColor: "#f0f0f0",
+                    backgroundColor: "#f6f6f6",
                   },
                   display: "flex",
                   alignItems: "center",
                 }}
               >
                 <TableCell
-                  sx={{ borderBottom: "none", padding: "8px", width: "5%" }}
+                  sx={{
+                    borderBottom: "none",
+                    padding: "0px 10px 0px 10px",
+                    width: isSmallScreen ? "20%" : "5%",
+                    display: "flex",
+                    justifyContent: isSmallScreen ? "flex-start" : "center",
+                  }}
                 >
-                  <Checkbox />
+                  <Checkbox
+                    sx={{
+                      margin: 0,
+                    }}
+                  />
                 </TableCell>
                 <TableCell
-                  sx={{ borderBottom: "none", padding: "8px", width: "20%" }}
+                  sx={{
+                    borderBottom: "none",
+                    padding: "8px",
+                    width: isSmallScreen ? "80%" : "20%",
+                  }}
                 >
                   {movie.title}
                 </TableCell>
-                <TableCell
-                  sx={{ borderBottom: "none", padding: "8px", width: "60%" }}
-                >
-                  {movie.description}
-                </TableCell>
-                <TableCell
-                  sx={{ borderBottom: "none", padding: "8px", width: "15%" }}
-                >
-                  {movie.release_date}
-                </TableCell>
+                {!isSmallScreen && (
+                  <>
+                    <TableCell
+                      sx={{
+                        borderBottom: "none",
+                        padding: "8px",
+                        width: "60%",
+                      }}
+                    >
+                      {movie.description}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderBottom: "none",
+                        padding: "8px",
+                        width: "15%",
+                      }}
+                    >
+                      {movie.release_date}
+                    </TableCell>
+                  </>
+                )}
               </TableRow>
             ))}
           </TableBody>
