@@ -3,6 +3,7 @@ import { darken } from "@mui/material/styles";
 import { Button, Grid2, Card, CardMedia } from "@mui/material";
 import SearchComponent from "../components/search/SearchField";
 import ModalInfoMovie from "../components/modal/InfoMovie";
+import LinearProgress from "@mui/material/LinearProgress";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
@@ -11,10 +12,12 @@ const MovieList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const debounceTimeout = useRef(null);
 
   const fetchMovies = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await fetch(
         `https://checklist-movies-backend.onrender.com/movie-data?movie=${searchTerm}`
@@ -24,6 +27,7 @@ const MovieList = () => {
     } catch (error) {
       console.error("Erro ao buscar filmes:", error);
     }
+    setLoading(false);
   }, [searchTerm]);
 
   const addMovie = async (movieId) => {
@@ -88,6 +92,29 @@ const MovieList = () => {
           placeholder="Search..."
           width="100%"
         />
+        {loading && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: "4px", // Altura do LinearProgress
+              overflow: "hidden",
+              borderBottomLeftRadius: "4px", // Mesmo border-radius do componente de pesquisa
+              borderBottomRightRadius: "4px",
+            }}
+          >
+            <LinearProgress
+              style={{
+                width: "100%",
+                height: "100%",
+                borderBottomLeftRadius: "inherit",
+                borderBottomRightRadius: "inherit",
+              }}
+            />
+          </div>
+        )}
       </div>
       <Grid2
         container
@@ -184,7 +211,11 @@ const MovieList = () => {
         ))}
       </Grid2>
       {selectedMovie && (
-        <ModalInfoMovie selectedMovie={selectedMovie} isModalOpen={isModalOpen} handleCloseModal={handleCloseModal}/>
+        <ModalInfoMovie
+          selectedMovie={selectedMovie}
+          isModalOpen={isModalOpen}
+          handleCloseModal={handleCloseModal}
+        />
       )}
     </div>
   );

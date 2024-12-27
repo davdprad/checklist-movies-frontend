@@ -18,7 +18,7 @@ const Search = styled("div")(
       width: width,
       "&:focus-within": {
         maxWidth: "100%",
-        width: `calc(${width} + 5%)`,
+        width: `calc(${width === "100%" ? "100%" : `${width} + 5%`})`,
       },
     },
   })
