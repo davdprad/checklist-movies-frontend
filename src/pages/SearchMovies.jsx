@@ -86,35 +86,32 @@ const MovieList = () => {
   return (
     <div style={{ padding: "20px" }}>
       <div style={{ marginBottom: "20px" }}>
-        <SearchComponent
-          setValue={setSearchTerm}
-          backgroundColor="#4D76AC30"
-          placeholder="Search..."
-          width="100%"
-        />
-        {loading && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: "4px", // Altura do LinearProgress
-              overflow: "hidden",
-              borderBottomLeftRadius: "4px", // Mesmo border-radius do componente de pesquisa
-              borderBottomRightRadius: "4px",
-            }}
-          >
+        <div
+          style={{
+            position: "relative",
+            borderRadius: "8px",
+            overflow: "hidden",
+            backgroundColor: "#4D76AC30",
+          }}
+        >
+          <SearchComponent
+            setValue={setSearchTerm}
+            backgroundColor="#FFFFFF00"
+            placeholder="Search..."
+            width="100%"
+          />
+          {loading && (
             <LinearProgress
               style={{
-                width: "100%",
-                height: "100%",
-                borderBottomLeftRadius: "inherit",
-                borderBottomRightRadius: "inherit",
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: "4px",
               }}
             />
-          </div>
-        )}
+          )}
+        </div>
       </div>
       <Grid2
         container

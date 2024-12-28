@@ -16,17 +16,26 @@ const ConfirmDialog = ({
   message = "Você tem certeza que deseja executar a ação?",
 }) => {
   return (
-    <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+    <Dialog
+      open={openDialog}
+      onClose={() => setOpenDialog(false)}
+      sx={{
+        "& .MuiPaper-root": {
+          borderRadius: "10px",
+          backgroundColor: "#f0f0f0",
+        },
+      }}
+    >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Typography>{message}</Typography>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ padding: "10px" }}>
         <Button onClick={() => setOpenDialog(false)} color="primary">
           Cancelar
         </Button>
         <Button onClick={handleFunction} color="error">
-          Deletar
+          Confirmar
         </Button>
       </DialogActions>
     </Dialog>

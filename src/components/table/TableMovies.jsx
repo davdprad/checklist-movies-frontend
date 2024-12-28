@@ -9,11 +9,6 @@ import {
   TableRow,
   Checkbox,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
@@ -26,6 +21,7 @@ const TableMovies = ({ data }) => {
   const [selectedMovies, setSelectedMovies] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
   const [openDialog, setOpenDialog] = useState(false);
+  const [dialogAction, setDialogAction] = useState(null); // Define the dialog action
 
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
@@ -66,13 +62,50 @@ const TableMovies = ({ data }) => {
     );
   };
 
-  const handleDeleteMovies = () => {
-    const updatedMovies = movies.filter(
-      (movie) => !selectedMovies.includes(movie.id)
-    );
-    setMovies(updatedMovies);
-    setSelectedMovies([]);
+  const handleDeleteMovies = async (moviesId) => {
+    try {
+      const formattedMovies = moviesId.map((id) => ({ id }));
+
+      const response = await fetch(
+        "https://checklist-movies-backend.onrender.com/delete-movies",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formattedMovies),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erro ao deletar filmes:", errorData.detail);
+        alert(`Erro: ${errorData.detail}`);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Filmes deletados com sucesso:", data);
+      alert("Filmes deletados com sucesso!");
+    } catch (error) {
+      console.error("Erro ao conectar com o backend:", error);
+      alert("Erro ao deletar filmes. Tente novamente.");
+    }
+  };
+
+  const handleDialogAction = () => {
+    if (dialogAction === "delete") {
+      handleDeleteMovies(selectedMovies);
+    } else if (dialogAction === "markWatched") {
+      // Implementação para marcar como assistido
+      alert("Filmes marcados como assistidos!");
+    }
     setOpenDialog(false);
+  };
+
+  const openConfirmDialog = (action) => {
+    setDialogAction(action);
+    setOpenDialog(true);
   };
 
   return (
@@ -95,24 +128,32 @@ const TableMovies = ({ data }) => {
         <Button
           variant="contained"
           color="error"
-          onClick={() => setOpenDialog(true)}
+          onClick={() => openConfirmDialog("delete")}
           disabled={selectedMovies.length === 0}
           sx={{
             borderRadius: 2,
+            display: "flex",
+            flexDirection: "row",
+            gap: 1,
           }}
         >
           <DeleteIcon />
+          <span>Remover</span>
         </Button>
         <Button
           variant="contained"
           color="success"
-          onClick={() => setOpenDialog(true)}
+          onClick={() => openConfirmDialog("markWatched")}
           disabled={selectedMovies.length === 0}
           sx={{
             borderRadius: 2,
+            display: "flex",
+            flexDirection: "row",
+            gap: 1,
           }}
         >
           <DoneIcon />
+          <span>Assistido</span>
         </Button>
       </div>
       <TableContainer>
@@ -264,7 +305,7 @@ const TableMovies = ({ data }) => {
       <ConfirmDialog
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
-        handleFunction={handleDeleteMovies}
+        handleFunction={handleDialogAction}
       />
     </div>
   );
