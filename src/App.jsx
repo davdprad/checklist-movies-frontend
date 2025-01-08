@@ -1,14 +1,22 @@
 import React from "react";
 import SearchAppBar from "./layout/Header";
 import MoviesPage from "./pages/MoviesPage";
-import MovieList from "./pages/SearchMovies";
+import { Box } from "@mui/material";
 
 const App = () => {
   return (
     <>
-      <SearchAppBar />
-      <MoviesPage />
-      <MovieList />
+      <Box
+        sx={{
+          width: "100vw",
+          height: "100vh",
+          overflowY: "hidden",
+          overflowX: "hidden",
+        }}
+      >
+        <SearchAppBar />
+        <MoviesPage />
+      </Box>
     </>
   );
 };
