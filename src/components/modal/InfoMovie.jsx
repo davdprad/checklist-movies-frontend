@@ -6,14 +6,19 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: { xs: "80%", sm: "80%", md: "600px" }, // Modal responsivo
+  width: { xs: "80%", sm: "80%", md: "600px" },
   bgcolor: "background.paper",
   boxShadow: 24,
-  padding: { xs: 2, sm: 4 }, // Ajustando padding para telas menores
+  padding: { xs: 2, sm: 4 },
   borderRadius: 5,
 };
 
-const ModalInfoMovie = ({ isModalOpen, handleCloseModal, selectedMovie }) => {
+const ModalInfoMovie = ({
+  isModalOpen,
+  handleCloseModal,
+  selectedMovie,
+  handleAddMovie,
+}) => {
   return (
     <Modal
       open={isModalOpen}
@@ -25,22 +30,20 @@ const ModalInfoMovie = ({ isModalOpen, handleCloseModal, selectedMovie }) => {
       }}
     >
       <Box sx={modalStyle}>
-        {/* Primeira caixa: Imagem e Título + Descrição lado a lado */}
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "row", sm: "row" }, // Titulo e imagem lado a lado
+            flexDirection: { xs: "row", sm: "row" },
             gap: 2,
             marginBottom: 2,
           }}
         >
-          {/* Imagem do filme */}
           <CardMedia
             component="img"
             sx={{
               objectFit: "cover",
               height: { xs: 150, sm: 250 },
-              width: { xs: 100, sm: 150 }, // Ajustando imagem para dispositivos móveis
+              width: { xs: 100, sm: 150 },
               borderRadius: 2,
             }}
             image={
@@ -50,13 +53,11 @@ const ModalInfoMovie = ({ isModalOpen, handleCloseModal, selectedMovie }) => {
             }
             alt={selectedMovie?.title || "Movie Image"}
           />
-
-          {/* Título e Descrição */}
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
-              justifyContent: "flex-start", // Garante que os elementos fiquem no topo
+              justifyContent: "flex-start",
               gap: 1,
               width: "100%",
             }}
@@ -83,10 +84,32 @@ const ModalInfoMovie = ({ isModalOpen, handleCloseModal, selectedMovie }) => {
             >
               {selectedMovie?.release_date || "Não disponível"}
             </Typography>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(0, max-content))",
+                gap: "10px",
+                justifyContent: "start",
+                flexWrap: "wrap",
+              }}
+            >
+              {selectedMovie?.platforms.map((platform, index) => (
+                <Typography
+                  key={index}
+                  fontSize="12px"
+                  sx={{
+                    backgroundColor: "#f1f1f1",
+                    padding: "5px",
+                    borderRadius: "5px",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {platform?.name}
+                </Typography>
+              ))}
+            </Box>
           </Box>
         </Box>
-
-        {/* Segunda caixa: Descrição do filme */}
         <Box sx={{ marginBottom: 2 }}>
           <Typography
             sx={{
@@ -97,29 +120,51 @@ const ModalInfoMovie = ({ isModalOpen, handleCloseModal, selectedMovie }) => {
               fontFamily: "Roboto, sans-serif",
             }}
           >
-            {selectedMovie?.overview || "Descrição não disponível."}
+            {selectedMovie?.description || "Descrição não disponível."}
           </Typography>
         </Box>
-
-        {/* Terceira caixa: Botão de Fechar */}
-        <Button
-          onClick={handleCloseModal}
-          sx={{
-            mt: 2,
-            borderRadius: 3,
-            backgroundColor: "#252561",
-            color: "#FFF",
-            textTransform: "none",
-            fontFamily: "Roboto, sans-serif",
-            ":hover": {
-              backgroundColor: "#191942",
-            },
-          }}
-          variant="contained"
-          fullWidth
-        >
-          Fechar
-        </Button>
+        <Box sx={{ display: "flex", gap: 5 }}>
+          <Button
+            onClick={handleCloseModal}
+            sx={{
+              mt: 2,
+              borderRadius: 3,
+              backgroundColor: "#252561",
+              color: "#FFF",
+              textTransform: "none",
+              transition: "transform 0.2s ease",
+              ":hover": {
+                boxShadow: "none",
+                backgroundColor: "#191942",
+                transform: "scale(1.02)",
+              },
+            }}
+            variant="contained"
+            fullWidth
+          >
+            Fechar
+          </Button>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => handleAddMovie(selectedMovie.id)}
+            sx={{
+              mt: 2,
+              borderRadius: 3,
+              backgroundColor: "#252561",
+              color: "#FFF",
+              textTransform: "none",
+              transition: "transform 0.2s ease",
+              ":hover": {
+                boxShadow: "none",
+                backgroundColor: "#191942",
+                transform: "scale(1.02)",
+              },
+            }}
+          >
+            + Add
+          </Button>
+        </Box>
       </Box>
     </Modal>
   );

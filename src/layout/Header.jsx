@@ -8,11 +8,11 @@ import SearchComponent from "../components/search/SearchField";
 
 export default function SearchAppBar() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar
         position="static"
         sx={{
-          backgroundColor: "#4D76AC",
+          background: "linear-gradient(45deg, #C000F6, #C700FF)",
         }}
       >
         <Toolbar
@@ -23,7 +23,7 @@ export default function SearchAppBar() {
             gap: "10px",
           }}
         >
-          <div style={{ width: "auto" }}>
+          <div>
             <IconButton
               size="large"
               edge="start"
@@ -33,8 +33,8 @@ export default function SearchAppBar() {
               <MenuIcon />
             </IconButton>
           </div>
-          <div style={{ width: "100%" }}>
-            <SearchComponent backgroundColor="#FFFFFF30" />
+          <div>
+            <SearchComponent backgroundColor="#FFFFFF90" color="#22003B" />
           </div>
         </Toolbar>
       </AppBar>

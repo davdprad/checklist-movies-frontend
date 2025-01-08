@@ -21,7 +21,7 @@ const TableMovies = ({ data }) => {
   const [selectedMovies, setSelectedMovies] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
   const [openDialog, setOpenDialog] = useState(false);
-  const [dialogAction, setDialogAction] = useState(null); // Define the dialog action
+  const [dialogAction, setDialogAction] = useState(null);
 
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
@@ -64,10 +64,10 @@ const TableMovies = ({ data }) => {
 
   const handleDeleteMovies = async (moviesId) => {
     try {
-      const formattedMovies = moviesId.map((id) => ({ id }));
+      const formattedMovies = moviesId.map((id) => id);
 
       const response = await fetch(
-        "https://checklist-movies-backend.onrender.com/delete-movies",
+        "http://localhost:8000/my-list/delete-movies",
         {
           method: "POST",
           headers: {
@@ -111,9 +111,11 @@ const TableMovies = ({ data }) => {
   return (
     <div
       style={{
-        backgroundColor: "#4D76AC30",
+        background:
+          "linear-gradient(45deg, #C000F6, #C700FF)",
         padding: 10,
         borderRadius: 12,
+        marginBottom: "20px",
       }}
     >
       <div

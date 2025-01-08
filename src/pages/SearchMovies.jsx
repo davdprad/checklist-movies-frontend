@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { darken } from "@mui/material/styles";
 import { Button, Grid2, Card, CardMedia } from "@mui/material";
 import SearchComponent from "../components/search/SearchField";
 import ModalInfoMovie from "../components/modal/InfoMovie";
@@ -20,7 +19,7 @@ const MovieList = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://checklist-movies-backend.onrender.com/movie-data?movie=${searchTerm}`
+        `http://localhost:8000/api/movie-list?movie=${searchTerm}`
       );
       const data = await response.json();
       setMovies(data);
@@ -30,16 +29,29 @@ const MovieList = () => {
     setLoading(false);
   }, [searchTerm]);
 
+  const fetchMovieDetail = async (movie_id) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/movie-data?movie_id=${movie_id}`
+      );
+      const data = await response.json();
+      setSelectedMovie(data);
+    } catch (error) {
+      console.error("Erro ao buscar detalhes do filme:", error);
+    }
+    setLoading(false);
+  };
+
   const addMovie = async (movieId) => {
     try {
       const response = await fetch(
-        "https://checklist-movies-backend.onrender.com/add-movie",
+        `http://localhost:8000/my-list/add-movie?movie=${movieId}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ id: movieId }),
         }
       );
 
@@ -74,7 +86,7 @@ const MovieList = () => {
   }, [searchTerm, fetchMovies]);
 
   const handleCardClick = (movie) => {
-    setSelectedMovie(movie);
+    fetchMovieDetail(movie.id);
     setIsModalOpen(true);
   };
 
@@ -84,14 +96,14 @@ const MovieList = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
       <div style={{ marginBottom: "20px" }}>
         <div
           style={{
             position: "relative",
             borderRadius: "8px",
             overflow: "hidden",
-            backgroundColor: "#4D76AC30",
+            boxSizing: "border-box",
           }}
         >
           <SearchComponent
@@ -99,6 +111,8 @@ const MovieList = () => {
             backgroundColor="#FFFFFF00"
             placeholder="Search..."
             width="100%"
+            color="#C000F6"
+            border="1px solid #C000F6"
           />
           {loading && (
             <LinearProgress
@@ -120,98 +134,107 @@ const MovieList = () => {
           justifyContent: "center",
         }}
       >
-        {movies.map((movie) => (
-          <Grid2 key={movie.id}>
-            <Card
-              sx={{
-                borderRadius: 5,
-                backgroundColor: "#D3E0E6",
-                boxShadow: "none",
-                overflow: "hidden",
-                transition: "background-color 0.3s ease",
-                ":hover": {
-                  backgroundColor: darken("#D3E0E6", 0.1),
-                },
-              }}
-              onClick={() => handleCardClick(movie)}
-            >
-              <div style={{ overflow: "hidden" }}>
-                <CardMedia
-                  component="img"
-                  sx={{
-                    objectFit: "cover",
-                    height: 300,
-                    width: 200,
-                    margin: 0,
-                    transition: "transform 0.5s ease",
-                    ":hover": {
-                      transform: "scale(1.2)",
-                    },
-                  }}
-                  image={
-                    movie.poster_path
-                      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                      : "https://via.placeholder.com/200x300/808080/FFFFFF?text=No+Image"
-                  }
-                  alt={movie.title}
-                />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  height: 120,
-                  width: 200,
-                  padding: 10,
-                  boxSizing: "border-box",
-                  justifyContent: "space-between",
-                  gap: 10,
+        {movies.length > 0 ? (
+          movies.map((movie) => (
+            <Grid2 key={movie.id}>
+              <Card
+                sx={{
+                  borderRadius: 5,
+                  boxShadow: "none",
+                  overflow: "hidden",
+                  backgroundColor: "#FFFFFF10",
                 }}
               >
-                <div style={{ justifyContent: "center" }}>
-                  <p
-                    style={{
-                      fontSize: 16,
-                      fontFamily: "Segoe UI",
-                      height: 50,
-                      overflow: "auto",
+                <div style={{ overflow: "hidden" }}>
+                  <CardMedia
+                    component="img"
+                    sx={{
+                      objectFit: "cover",
+                      height: 300,
+                      width: 200,
                       margin: 0,
-                      fontWeight: "bold",
+                      transition: "transform 0.5s ease",
+                      ":hover": {
+                        transform: "scale(1.2)",
+                      },
                     }}
-                  >
-                    {movie.title}
-                  </p>
+                    image={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                        : "https://via.placeholder.com/200x300/808080/FFFFFF?text=No+Image"
+                    }
+                    alt={movie.title}
+                    onClick={() => handleCardClick(movie)}
+                  />
                 </div>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={() => addMovie(movie.id)}
-                  sx={{
-                    backgroundColor: "#252561",
-                    alignItems: "flex-end",
-                    borderRadius: 3,
-                    boxShadow: "none",
-                    textTransform: "none",
-                    transition: "transform 0.2s ease",
-                    ":hover": {
-                      boxShadow: "none",
-                      backgroundColor: "#191942",
-                      transform: "scale(1.02)",
-                    },
+                <div
+                  className="card-content"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: 120,
+                    width: 200,
+                    padding: 10,
+                    boxSizing: "border-box",
+                    justifyContent: "space-between",
+                    gap: 10,
                   }}
                 >
-                  + Add
-                </Button>
-              </div>
-            </Card>
-          </Grid2>
-        ))}
+                  <div
+                    style={{ justifyContent: "center" }}
+                    onClick={() => handleCardClick(movie)}
+                  >
+                    <p
+                      style={{
+                        fontSize: 16,
+                        fontFamily: "Segoe UI",
+                        height: 50,
+                        overflow: "auto",
+                        margin: 0,
+                        fontWeight: "bold",
+                        color: "#ffffff", // Texto branco
+                      }}
+                    >
+                      {movie.title}
+                    </p>
+                  </div>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={() => addMovie(movie.id)}
+                    sx={{
+                      background:
+                        "linear-gradient(45deg, #22003B,rgb(26, 0, 45))",
+                      alignItems: "flex-end",
+                      borderRadius: 3,
+                      border: "1px solid #C000F6",
+                      boxShadow: "none",
+                      textTransform: "none",
+                      transition: "background 0.3s ease, transform 0.2s ease",
+                      color: "#C000F6",
+                      ":hover": {
+                        transform: "scale(1.02)",
+                      },
+                    }}
+                  >
+                    + Add
+                  </Button>
+                </div>
+              </Card>
+            </Grid2>
+          ))
+        ) : (
+          <p style={{ fontFamily: "Segoe UI", color: "#C000F6" }}>
+            Not movies available
+          </p>
+        )}
       </Grid2>
       {selectedMovie && (
         <ModalInfoMovie
           selectedMovie={selectedMovie}
           isModalOpen={isModalOpen}
           handleCloseModal={handleCloseModal}
+          handleAddMovie={addMovie}
         />
       )}
     </div>

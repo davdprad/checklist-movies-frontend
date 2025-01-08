@@ -4,10 +4,12 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 
 const Search = styled("div")(
-  ({ theme, backgroundColor, borderRadius, width }) => ({
+  ({ theme, backgroundColor, borderRadius, width, border }) => ({
     position: "relative",
     borderRadius: borderRadius,
     backgroundColor: backgroundColor,
+    border: border,
+    boxSizing: "border-box",
     "&:hover": {
       backgroundColor: darken(backgroundColor, 0.1),
     },
@@ -18,7 +20,7 @@ const Search = styled("div")(
       width: width,
       "&:focus-within": {
         maxWidth: "100%",
-        width: `calc(${width === "100%" ? "100%" : `${width} + 5%`})`,
+        width: `calc(${width >= "100%" ? "100%" : `${width}`})`,
       },
     },
   })
@@ -34,13 +36,18 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   justifyContent: "center",
 }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
+const StyledInputBase = styled(InputBase)(({ theme, color }) => ({
+  color: color,
   width: "100%",
   "& .MuiInputBase-input": {
+    color: color,
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
+    "&::placeholder": {
+      color: color,
+      opacity: 1,
+    },
   },
 }));
 
@@ -50,6 +57,8 @@ export default function SearchComponent({
   borderRadius = 10,
   placeholder = "Search...",
   width = "25ch",
+  color = "#FFF",
+  border = "none",
 }) {
   const [searchTerm, setSearchTerm] = React.useState("");
 
@@ -65,17 +74,16 @@ export default function SearchComponent({
       backgroundColor={backgroundColor}
       borderRadius={borderRadius}
       width={width}
+      border={border}
     >
       <SearchIconWrapper>
-        <SearchIcon />
+        <SearchIcon sx={{ color: color }} />
       </SearchIconWrapper>
       <StyledInputBase
         value={searchTerm}
         onChange={handleChange}
         placeholder={placeholder}
-        inputProps={{
-          "aria-label": "search",
-        }}
+        color={color}
       />
     </Search>
   );
