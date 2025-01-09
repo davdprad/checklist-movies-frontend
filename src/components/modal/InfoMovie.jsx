@@ -1,5 +1,6 @@
 import React from "react";
 import { Typography, Button, Modal, Box, CardMedia } from "@mui/material";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const modalStyle = {
   position: "absolute",
@@ -7,7 +8,7 @@ const modalStyle = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: { xs: "80%", sm: "80%", md: "600px" },
-  bgcolor: "background.paper",
+  bgcolor: "#22003B",
   boxShadow: 24,
   padding: { xs: 2, sm: 4 },
   borderRadius: 5,
@@ -19,6 +20,9 @@ const ModalInfoMovie = ({
   selectedMovie,
   handleAddMovie,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
     <Modal
       open={isModalOpen}
@@ -45,6 +49,7 @@ const ModalInfoMovie = ({
               height: { xs: 150, sm: 250 },
               width: { xs: 100, sm: 150 },
               borderRadius: 2,
+              outline: `1px solid ${isMobile ? "#7A19ED" : "#C000F6"}`,
             }}
             image={
               selectedMovie?.poster_path
@@ -70,6 +75,7 @@ const ModalInfoMovie = ({
                 fontFamily: "Roboto, sans-serif",
                 fontSize: { xs: "16px", sm: "20px" },
                 lineHeight: 1.2,
+                color: "#FFF",
               }}
             >
               {selectedMovie?.title || "Título Indisponível"}
@@ -77,7 +83,7 @@ const ModalInfoMovie = ({
             <Typography
               sx={{
                 fontSize: "14px",
-                color: "gray",
+                color: "#FFF",
                 fontFamily: "Roboto, sans-serif",
                 lineHeight: 1.4,
               }}
@@ -98,10 +104,12 @@ const ModalInfoMovie = ({
                   key={index}
                   fontSize="12px"
                   sx={{
-                    backgroundColor: "#f1f1f1",
+                    backgroundColor: "#f1f1f100",
+                    outline: `1px solid ${isMobile ? "#7A19ED" : "#C000F6"}`,
                     padding: "5px",
                     borderRadius: "5px",
                     whiteSpace: "nowrap",
+                    color: isMobile ? "#7A19ED" : "#C000F6",
                   }}
                 >
                   {platform?.name}
@@ -114,7 +122,7 @@ const ModalInfoMovie = ({
           <Typography
             sx={{
               fontSize: "14px",
-              color: "rgba(0, 0, 0, 0.7)",
+              color: "#FFF",
               textAlign: "justify",
               lineHeight: 1.6,
               fontFamily: "Roboto, sans-serif",
@@ -129,13 +137,13 @@ const ModalInfoMovie = ({
             sx={{
               mt: 2,
               borderRadius: 3,
-              backgroundColor: "#252561",
+              backgroundColor: "#FFFFFF00",
+              outline: `1px solid ${isMobile ? "#7A19ED" : "#C000F6"}`,
               color: "#FFF",
               textTransform: "none",
               transition: "transform 0.2s ease",
               ":hover": {
                 boxShadow: "none",
-                backgroundColor: "#191942",
                 transform: "scale(1.02)",
               },
             }}
@@ -151,7 +159,7 @@ const ModalInfoMovie = ({
             sx={{
               mt: 2,
               borderRadius: 3,
-              backgroundColor: "#252561",
+              backgroundColor: isMobile ? "#7A19ED" : "#C000F6",
               color: "#FFF",
               textTransform: "none",
               transition: "transform 0.2s ease",

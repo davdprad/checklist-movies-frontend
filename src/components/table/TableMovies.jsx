@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useMediaQuery } from "@mui/material";
+import { useMediaQuery, useTheme } from "@mui/material";
 import {
   Table,
   TableBody,
@@ -24,6 +24,9 @@ const TableMovies = ({ data }) => {
   const [dialogAction, setDialogAction] = useState(null);
 
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     if (data) {
@@ -67,7 +70,7 @@ const TableMovies = ({ data }) => {
       const formattedMovies = moviesId.map((id) => id);
 
       const response = await fetch(
-        "http://localhost:8000/my-list/delete-movies",
+        "https://checklist-movies-backend.onrender.com/my-list/delete-movies",
         {
           method: "POST",
           headers: {
@@ -111,8 +114,7 @@ const TableMovies = ({ data }) => {
   return (
     <div
       style={{
-        background:
-          "linear-gradient(45deg, #C000F6, #C700FF)",
+        background: isMobile ? " #7A19ED" : " #C000F6",
         padding: 10,
         borderRadius: 12,
         marginBottom: "20px",
