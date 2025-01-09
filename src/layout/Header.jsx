@@ -1,18 +1,20 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
+import { AppBar, Box, useMediaQuery, useTheme } from '@mui/material';
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchComponent from "../components/search/SearchField";
 
 export default function SearchAppBar() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Box>
       <AppBar
         position="static"
         sx={{
-          background: "linear-gradient(45deg, #C000F6, #C700FF)",
+          background: isMobile ? " #7A19ED" : " #C000F6",
         }}
       >
         <Toolbar

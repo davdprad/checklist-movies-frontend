@@ -3,6 +3,7 @@ import { Button, Grid2, Card, CardMedia } from "@mui/material";
 import SearchComponent from "../components/search/SearchField";
 import ModalInfoMovie from "../components/modal/InfoMovie";
 import LinearProgress from "@mui/material/LinearProgress";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
@@ -15,11 +16,14 @@ const MovieList = () => {
 
   const debounceTimeout = useRef(null);
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const fetchMovies = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8000/api/movie-list?movie=${searchTerm}`
+        `https://checklist-movies-backend.onrender.com/api/movie-list?movie=${searchTerm}`
       );
       const data = await response.json();
       setMovies(data);
@@ -33,7 +37,7 @@ const MovieList = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8000/api/movie-data?movie_id=${movie_id}`
+        `https://checklist-movies-backend.onrender.com/api/movie-data?movie_id=${movie_id}`
       );
       const data = await response.json();
       setSelectedMovie(data);
@@ -46,7 +50,7 @@ const MovieList = () => {
   const addMovie = async (movieId) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/my-list/add-movie?movie=${movieId}`,
+        `https://checklist-movies-backend.onrender.com/my-list/add-movie?movie=${movieId}`,
         {
           method: "POST",
           headers: {
@@ -111,8 +115,8 @@ const MovieList = () => {
             backgroundColor="#FFFFFF00"
             placeholder="Search..."
             width="100%"
-            color="#C000F6"
-            border="1px solid #C000F6"
+            color={isMobile ? "#7A19ED" : "#C000F6"}
+            border={`1px solid ${isMobile ? "#7A19ED" : "#C000F6"}`}
           />
           {loading && (
             <LinearProgress
@@ -122,6 +126,13 @@ const MovieList = () => {
                 left: 0,
                 right: 0,
                 height: "4px",
+                color: isMobile ? "#7A19ED" : "#C000F6",
+              }}
+              sx={{
+                bgcolor: "rgb(62, 47, 72)",
+                "& .MuiLinearProgress-bar": {
+                  bgcolor: `1px solid ${isMobile ? "#7A19ED" : "#C000F6"}`,
+                },
               }}
             />
           )}
@@ -142,7 +153,8 @@ const MovieList = () => {
                   borderRadius: 5,
                   boxShadow: "none",
                   overflow: "hidden",
-                  backgroundColor: "#FFFFFF10",
+                  backgroundColor: "#FFFFFF00",
+                  outline: `1px solid ${isMobile ? "#7A19ED" : "#C000F6"}`,
                 }}
               >
                 <div style={{ overflow: "hidden" }}>
@@ -192,7 +204,7 @@ const MovieList = () => {
                         overflow: "auto",
                         margin: 0,
                         fontWeight: "bold",
-                        color: "#ffffff", // Texto branco
+                        color: "#ffffff",
                       }}
                     >
                       {movie.title}
@@ -203,15 +215,13 @@ const MovieList = () => {
                     fullWidth
                     onClick={() => addMovie(movie.id)}
                     sx={{
-                      background:
-                        "linear-gradient(45deg, #22003B,rgb(26, 0, 45))",
+                      background: isMobile ? "#7A19ED" : "#C000F6",
                       alignItems: "flex-end",
                       borderRadius: 3,
-                      border: "1px solid #C000F6",
                       boxShadow: "none",
                       textTransform: "none",
                       transition: "background 0.3s ease, transform 0.2s ease",
-                      color: "#C000F6",
+                      color: "#22003B",
                       ":hover": {
                         transform: "scale(1.02)",
                       },
@@ -224,7 +234,7 @@ const MovieList = () => {
             </Grid2>
           ))
         ) : (
-          <p style={{ fontFamily: "Segoe UI", color: "#C000F6" }}>
+          <p style={{ fontFamily: "Segoe UI", color: isMobile ? "#7A19ED" : "#C000F6" }}>
             Not movies available
           </p>
         )}
